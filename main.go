@@ -11,7 +11,7 @@ import (
 	"sync"
 
 	"github.com/dsnet/compress/bzip2"
-	"github.com/rainycape/cld2"
+	"github.com/meehow/cld2"
 )
 
 func WalkMatch(root, pattern string) ([]string, error) {
