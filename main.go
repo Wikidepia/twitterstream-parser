@@ -11,7 +11,6 @@ import (
 
 	"github.com/dsnet/compress/bzip2"
 	"github.com/korovkin/limiter"
-	"github.com/meehow/cld2"
 )
 
 func WalkMatch(root, pattern string) ([]string, error) {
@@ -51,8 +50,8 @@ func process(infile string, fout *os.File) {
 	for scanner.Scan() {
 		scanText := scanner.Text()
 		matchText := re.FindStringSubmatch(scanText)
-		if len(matchText) == 2 {
-			if cld2.Detect(matchText[1]) == "id" {
+		if len(matchText) != 0 {
+			if matchText[1] == "in" {
 				fout.WriteString(scanText + "\n")
 			}
 		}
@@ -64,7 +63,7 @@ func process(infile string, fout *os.File) {
 	println("Processed", infile)
 }
 
-var re = regexp.MustCompile(`(?m)"text":"(.*?)","`)
+var re = regexp.MustCompile(`(?m)"lang":"(.*?)"`)
 
 func main() {
 	indir := flag.String("indir", "stream", "Input file (directory)")
