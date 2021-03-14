@@ -8,9 +8,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"sync"
 
 	"github.com/dsnet/compress/bzip2"
+	"github.com/korovkin/limiter"
 	"github.com/meehow/cld2"
 )
 
@@ -37,8 +37,6 @@ func WalkMatch(root, pattern string) ([]string, error) {
 }
 
 func process(infile string, fout *os.File) {
-	defer wg.Done()
-
 	// Open json file
 	bzip_file, err := os.Open(infile)
 	if err != nil {
@@ -66,7 +64,6 @@ func process(infile string, fout *os.File) {
 	println("Processed", infile)
 }
 
-var wg = new(sync.WaitGroup)
 var re = regexp.MustCompile(`(?m)"text":"(.*?)","`)
 
 func main() {
@@ -81,10 +78,12 @@ func main() {
 	}
 
 	fileArray, _ := WalkMatch(*indir, "*.bz2")
+	limit := limiter.NewConcurrencyLimiter(10)
 	for _, infile := range fileArray {
-		wg.Add(1)
-		go process(infile, fout)
+		limit.Execute(func() {
+			process(infile, fout)
+		})
 	}
 	defer fout.Close()
-	wg.Wait()
+	limit.Wait()
 }
