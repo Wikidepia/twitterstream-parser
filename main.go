@@ -72,6 +72,7 @@ var re = regexp.MustCompile(`(?m)"text":"(.*?)","`)
 func main() {
 	indir := flag.String("indir", "stream", "Input file (directory)")
 	outfile := flag.String("outfile", "outsample.jsonl", "Output file (.jsonl)")
+	flag.Parse()
 
 	// Open output file
 	fout, err := os.OpenFile(*outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
