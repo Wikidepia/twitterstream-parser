@@ -51,7 +51,7 @@ func process(infile string, fout *os.File) {
 		scanText := scanner.Text()
 		matchText := re.FindStringSubmatch(scanText)
 		if len(matchText) != 0 {
-			if matchText[1] == "in" {
+			if matchText[1] == "in" || matchText[1] == "id" {
 				fout.WriteString(scanText + "\n")
 			}
 		}
