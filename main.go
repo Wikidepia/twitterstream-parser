@@ -39,23 +39,24 @@ func process(infile string, fout *os.File) {
 	// Open json file
 	bzip_file, err := os.Open(infile)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	defer bzip_file.Close()
+
 	bzip_reader := io.Reader(bzip_file)
 	unbzip_reader, err := bzip2.NewReader(bzip_reader, &bzip2.ReaderConfig{})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
-	scanner := bufio.NewScanner(unbzip_reader)
 
 	// Read json and process it
+	scanner := bufio.NewScanner(unbzip_reader)
 	for scanner.Scan() {
-		if err := scanner.Err(); err != nil {
-			log.Fatal(err)
-			continue
+		if err_scan := scanner.Err(); err_scan != nil {
+			log.Println(err)
+			return
 		}
 		scanText := scanner.Text()
 		matchText := re.FindStringSubmatch(scanText)
@@ -65,7 +66,6 @@ func process(infile string, fout *os.File) {
 			}
 		}
 	}
-
 	println("Processed", infile)
 }
 
@@ -83,7 +83,7 @@ func main() {
 	}
 
 	fileArray, _ := WalkMatch(*indir, "*.bz2")
-	limit := limiter.NewConcurrencyLimiter(10)
+	limit := limiter.NewConcurrencyLimiter(1)
 	for _, infile := range fileArray {
 		limit.Execute(func() {
 			process(infile, fout)
