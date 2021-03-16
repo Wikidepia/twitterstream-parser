@@ -52,6 +52,10 @@ func process(infile string, fout *os.File) {
 
 	// Read json and process it
 	for scanner.Scan() {
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+			continue
+		}
 		scanText := scanner.Text()
 		matchText := re.FindStringSubmatch(scanText)
 		if len(matchText) != 0 {
@@ -61,9 +65,6 @@ func process(infile string, fout *os.File) {
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 	println("Processed", infile)
 }
 
