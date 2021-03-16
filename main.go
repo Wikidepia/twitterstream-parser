@@ -40,6 +40,7 @@ func process(infile string, fout *os.File) {
 	bzip_file, err := os.Open(infile)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 	defer bzip_file.Close()
 	bzip_reader := io.Reader(bzip_file)
