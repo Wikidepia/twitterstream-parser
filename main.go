@@ -83,7 +83,7 @@ func main() {
 	}
 
 	fileArray, _ := WalkMatch(*indir, "*.bz2")
-	limit := limiter.NewConcurrencyLimiter(1)
+	limit := limiter.NewConcurrencyLimiter(8)
 	for _, infile := range fileArray {
 		limit.Execute(func() {
 			process(infile, fout)
