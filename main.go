@@ -44,6 +44,10 @@ func process(infile string, fout *os.File) {
 	defer bzip_file.Close()
 	bzip_reader := io.Reader(bzip_file)
 	unbzip_reader, err := bzip2.NewReader(bzip_reader, &bzip2.ReaderConfig{})
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 	scanner := bufio.NewScanner(unbzip_reader)
 
 	// Read json and process it
